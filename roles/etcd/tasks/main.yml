@@ -1,0 +1,39 @@
+---
+
+- name: Install Etcd
+  package:
+    name: etcd
+    state: present
+
+- name: Editing etcd in Ubuntu
+  lineinfile:
+    state: present
+    dest: /etc/default/etcd
+    backup: yes
+    line: "{{ item }}"
+  with_items:
+  - {regexp: "ETCD_INITIAL_CLUSTER",line: 'ETCD_INITIAL_CLUSTER="controller=http://10.0.0.11:2380"'}
+  - {regexp: "ETCD_INITIAL_ADVERTISE_PEER_URLS",line: 'ETCD_INITIAL_ADVERTISE_PEER_URLS="http://10.0.0.11:2380"'}
+  - {regexp: "ETCD_ADVERTISE_CLIENT_URLS",line: 'ETCD_ADVERTISE_CLIENT_URLS="http://10.0.0.11:2379"'}
+  - {regexp: "ETCD_LISTEN_CLIENT_URLS", line: 'ETCD_LISTEN_CLIENT_URLS="http://10.0.0.11:2379"'}
+  when: ansible_distribution == "Ubuntu"
+
+- name: Editing etcd.conf in CentOS
+  lineinfile:
+    state: present
+    dest: /etc/etcd/etcd.conf
+    backup: yes
+    line: "{{ item }}"
+  with_items:
+  - {regexp: "ETCD_INITIAL_CLUSTER",line: 'ETCD_INITIAL_CLUSTER="controller=http://10.0.0.11:2380"'}
+  - {regexp: "ETCD_INITIAL_ADVERTISE_PEER_URLS",line: 'ETCD_INITIAL_ADVERTISE_PEER_URLS="http://10.0.0.11:2380"'}
+  - {regexp: "ETCD_ADVERTISE_CLIENT_URLS",line: 'ETCD_ADVERTISE_CLIENT_URLS="http://10.0.0.11:2379"'}
+  - {regexp: "ETCD_LISTEN_CLIENT_URLS", line: 'ETCD_LISTEN_CLIENT_URLS="http://10.0.0.11:2379"'}
+  when: ansible_distribution == "CentOS"
+
+- name: Enabling Etcd
+  service:
+    name: etcd
+    state: restarted
+    enabled: yes
+

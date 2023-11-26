@@ -1,0 +1,39 @@
+---
+
+- name: Install Memcached in Ubuntu
+  apt:
+    name:
+      - memcached
+      - python3-memcache
+    state: latest
+  when: ansible_distribution == "Ubuntu"
+
+- name: Install Mencached in CentOS
+  yum:
+    name: memchached
+    state: latest
+  when: ansible_distribution == "CentOS"
+
+- name: Editing memcached.conf in Ubuntu
+  ansible.builtin.lineinfile:
+    state: present
+    dest: /etc/memcached.conf
+    regexp: "-l 127.0.0.1"
+    line: "-l 10.0.0.11"
+    backup: yes
+  when: ansible_distribution == "Ubuntu"
+
+- name: Editing memcached in CentOS
+  ansible.builtin.lineinfile:
+    state: present
+    dest: /etc/sysconfig/memcached
+    regexp: 'OPTIONS = "-l 127.0.0.1,::1"'
+    line: 'OPTIONS = "-l 127.0.0.1.::1,controller"'
+    backup: yes
+  when: ansible_distribution == "CentOS"
+
+- name: Enabling Memcached in Ubuntu
+  service:
+    name: memcached
+    state: started
+    enabled: yes

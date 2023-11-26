@@ -1,0 +1,59 @@
+---
+
+- name: Install NTP (Chrony) in Ubuntu
+  apt:
+    name: chrony
+  when: ansible_distribution == "Ubuntu"
+
+- name: Install NTP (Chrony) in CentOS
+  yum:
+    name: chrony
+  when: ansible_distribution == "CentOS"
+
+- name: Editing chrony.conf in Ubuntu
+  ansible.builtin.lineinfile:
+    state: present
+    dest: /etc/chrony/chrony.conf
+    regexp: "server NTP_SERVER iburst"
+    line: "server 192.168.56.114 iburst"
+    backup: yes
+  when: ansible_distribution == "Ubuntu"
+
+- name: Enabling daemon of Chrony in Ubuntu
+  ansible.builtin.lineinfile:
+    state: present
+    dest: /etc/chrony/chrony.conf
+    line: "allow 10.0.0.0/24"
+    backup: yes
+  when: ansible_distribution == "Ubuntu"
+
+- name: Enabling NTP (Chrony) in Ubuntu
+  service:
+    name: chrony
+    state: restarted
+    enabled: yes
+  when: ansible_distribution == "Ubuntu"
+
+- name: Editing chrony.conf in CentOS
+  ansible.builtin.lineinfile:
+    state: present
+    dest: /etc/chrony.conf
+    regexp: "server NTP_SERVER iburst"
+    line: "server 192.168.56.117 iburst"
+    backup: yes
+  when: ansible_distribution == "CentOS"
+
+- name: Enabling daemon of Chrony in CentOS
+  ansible.builtin.lineinfile:
+    state: present
+    dest: /etc/chrony.conf
+    line: "allow 10.0.0.0/24"
+    backup: yes
+  when: ansible_distribution == "CentOS"
+
+- name: Enabling NTP (Chrony) in CentOS
+  service:
+    name: chronyd
+    state: started
+    enabled: yes
+  when: ansible_distribution == "CentOS"

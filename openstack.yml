@@ -1,0 +1,25 @@
+---
+
+- hosts: all
+  become: true
+  tasks:
+
+  - name: Update Repository Index
+    shell: |
+      sudo apt update | sudo apt upgrade -y
+    when: ansible_distribution == "Ubuntu"
+
+- hosts: compute
+  become: true
+  roles:
+#    - os_packages
+
+- hosts: controller
+  become: true
+  roles:
+    - ntp
+    - sql_database
+    - message_q
+    - memcached
+    - etcd
+
