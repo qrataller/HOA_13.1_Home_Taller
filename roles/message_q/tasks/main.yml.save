@@ -1,0 +1,25 @@
+---
+
+- name: Enabling EPEL Repository
+  shell: |
+   sudo yum install epel-release
+  when: ansible_distribution == "CentOS"
+
+- name: Install Message Queue (RabbitMQ) in Ubuntu
+  apt:
+    name: rabbitmq-server
+    state: latest
+  when: ansible_distribution == "Ubuntu"
+
+- name: Enabling and starting Message Queue in Ubuntu
+  service:
+    name: rabbitmq-server
+    state: started
+    enabled: yes
+  when: ansible_distribution == "Ubuntu"
+
+- name: Adding OpenStack User and Permission Configuration in Ubuntu
+  shell: |
+    rabbitmqctl add_user rose rsnnOpenStack
+    rabbitmqctl set_permissions rose ".*" ".*" ".*"
+  when: ansible_distribution == "Ubuntu"
