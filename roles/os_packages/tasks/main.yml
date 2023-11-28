@@ -8,18 +8,10 @@
 
 - name: Install OpenStack Packages in CentOS
   shell: |
-    sudo yum install openstack-packstack
+    sudo yum install python3-openstackclient -y
   when: ansible_distribution == "CentOS"
 
 - name: Install OpenStack Packages (Nova)
-  apt:
+  package:
     name: nova-compute
     state: latest
-  when: ansible_distribution == "Ubuntu"
-
-- name: Install OpenStack Packages (SELinux)
-  yum:
-    name: openstack-selinux
-    state: latest
-  when: ansible_distribution == "CentOS"
-

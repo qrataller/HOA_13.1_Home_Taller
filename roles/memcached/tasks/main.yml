@@ -1,6 +1,6 @@
 ---
 
-- name: Install Memcache
+- name: Install Memcached
   package:
     name: memcached
     state: latest
@@ -22,8 +22,7 @@
     line: 'OPTIONS = "-l 127.0.0.1,::1,controller"'
   when: ansible_distribution == "CentOS"
 
-- name: Enabling Memcached in Ubuntu
+- name: Enabling Memcached
   shell: |
-    sudo daemon reload
     sudo systemctl enable memcached
     sudo systemctl start memcached
